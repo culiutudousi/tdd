@@ -18,19 +18,20 @@ public class Mommifier {
                     if (VOWELS.contains(s.toLowerCase())) {
                         vowelStack.add(s);
                     } else {
-                        if (vowelStack.size() > 0) {
-                            resultStringList.add(MOMMY);
-                            resultStringList.add(String.join("", vowelStack));
-                            vowelStack.clear();
-                        }
+                        addMommyWithVowelSetToResult(vowelStack, resultStringList);
                         resultStringList.add(s);
                     }
                 });
+        addMommyWithVowelSetToResult(vowelStack, resultStringList);
+        return String.join("", resultStringList);
+    }
+
+    private void addMommyWithVowelSetToResult(List<String> vowelStack, List<String> resultStringList) {
         if (vowelStack.size() > 0) {
             resultStringList.add(MOMMY);
             resultStringList.add(String.join("", vowelStack));
+            vowelStack.clear();
         }
-        return String.join("", resultStringList);
     }
 
     private Boolean isVowelMoreThan(String string, double percentage) {
