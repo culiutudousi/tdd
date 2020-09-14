@@ -10,15 +10,26 @@ public class Mommifier {
         if (!isVowelMoreThan(string, 0.3)) {
             return string;
         }
+        List<String> vowelStack = new ArrayList<>();
         List<String> resultStringList = new ArrayList<>();
         string.codePoints()
                 .mapToObj(c -> String.valueOf((char) c))
                 .forEachOrdered(s -> {
                     if (VOWELS.contains(s.toLowerCase())) {
-                        resultStringList.add(MOMMY);
+                        vowelStack.add(s);
+                    } else {
+                        if (vowelStack.size() > 0) {
+                            resultStringList.add(MOMMY);
+                            resultStringList.add(String.join("", vowelStack));
+                            vowelStack.clear();
+                        }
+                        resultStringList.add(s);
                     }
-                    resultStringList.add(s);
                 });
+        if (vowelStack.size() > 0) {
+            resultStringList.add(MOMMY);
+            resultStringList.add(String.join("", vowelStack));
+        }
         return String.join("", resultStringList);
     }
 
