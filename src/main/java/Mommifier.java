@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Mommifier {
 
@@ -7,30 +8,52 @@ public class Mommifier {
     public static final String MOMMY = "mommy";
 
     public String mommify(String string) {
+        if (string.length() == 0) {
+            return string;
+        }
         if (!isVowelMoreThan(string, 0.3)) {
             return string;
         }
+        List<String> splittedStrings = splitVowelSetWithNonVowelSet(string);
+        return addMommyBeforeVowelSet(splittedStrings);
+    }
+
+    private String addMommyBeforeVowelSet(List<String> splittedStrings) {
+        List<String> addedStrings = splittedStrings.stream()
+                .map(s -> {
+                    if (VOWELS.contains(Character.toString(s.charAt(0)).toLowerCase())) {
+                        return MOMMY + s;
+                    }
+                    return s;
+                })
+                .collect(Collectors.toList());
+        return String.join("", addedStrings);
+    }
+
+    private List<String> splitVowelSetWithNonVowelSet(String string) {
         List<String> vowelStack = new ArrayList<>();
-        List<String> resultStringList = new ArrayList<>();
+        List<String> nonVowelStack = new ArrayList<>();
+        List<String> mixedResult = new ArrayList<>();
         string.codePoints()
                 .mapToObj(c -> String.valueOf((char) c))
                 .forEachOrdered(s -> {
                     if (VOWELS.contains(s.toLowerCase())) {
+                        addStackToResult(nonVowelStack, mixedResult);
                         vowelStack.add(s);
                     } else {
-                        addMommyWithVowelSetToResult(vowelStack, resultStringList);
-                        resultStringList.add(s);
+                        addStackToResult(vowelStack, mixedResult);
+                        mixedResult.add(s);
                     }
                 });
-        addMommyWithVowelSetToResult(vowelStack, resultStringList);
-        return String.join("", resultStringList);
+        addStackToResult(nonVowelStack, mixedResult);
+        addStackToResult(vowelStack, mixedResult);
+        return mixedResult;
     }
 
-    private void addMommyWithVowelSetToResult(List<String> vowelStack, List<String> resultStringList) {
-        if (vowelStack.size() > 0) {
-            resultStringList.add(MOMMY);
-            resultStringList.add(String.join("", vowelStack));
-            vowelStack.clear();
+    private void addStackToResult(List<String> stack, List<String> result) {
+        if (stack.size() > 0) {
+            result.add(String.join("", stack));
+            stack.clear();
         }
     }
 
