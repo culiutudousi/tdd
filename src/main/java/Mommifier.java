@@ -21,7 +21,7 @@ public class Mommifier {
     private String addMommyBeforeVowelSet(List<String> splittedStrings) {
         List<String> addedStrings = splittedStrings.stream()
                 .map(s -> {
-                    if (VOWELS.contains(Character.toString(s.charAt(0)).toLowerCase())) {
+                    if (doesStartWithVowel(s)) {
                         return MOMMY + s;
                     }
                     return s;
@@ -37,7 +37,7 @@ public class Mommifier {
         string.codePoints()
                 .mapToObj(c -> String.valueOf((char) c))
                 .forEachOrdered(s -> {
-                    if (VOWELS.contains(s.toLowerCase())) {
+                    if (doesStartWithVowel(s)) {
                         addStackToResult(nonVowelStack, mixedResult);
                         vowelStack.add(s);
                     } else {
@@ -55,6 +55,10 @@ public class Mommifier {
             result.add(String.join("", stack));
             stack.clear();
         }
+    }
+
+    private Boolean doesStartWithVowel(String string) {
+        return VOWELS.contains(Character.toString(string.charAt(0)).toLowerCase());
     }
 
     private Boolean isVowelMoreThan(String string, double percentage) {
